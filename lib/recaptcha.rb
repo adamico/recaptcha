@@ -16,7 +16,7 @@ module Recaptcha
   RECAPTCHA_API_SECURE_SERVER = 'https://api-secure.recaptcha.net';
   RECAPTCHA_VERIFY_SERVER     = 'api-verify.recaptcha.net';
 
-  SKIP_VERIFY_ENV = ['test', 'cucumber']
+  SKIP_VERIFY_ENV = ['test', 'cucumber', 'development']
 
   class RecaptchaError < StandardError
   end
