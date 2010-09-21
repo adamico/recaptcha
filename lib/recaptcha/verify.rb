@@ -15,9 +15,17 @@ module Recaptcha
       raise RecaptchaError, "No private key specified." unless private_key
       
       begin
+        proxyargs = []
+        if (proxy = ENV['http_proxy'])
+          uri = URI.parse(proxy)
+          proxyargs << uri.host << uri.port
+          proxyargs << uri.userinfo.split(/:/) if uri.userinfo
+        end
         recaptcha = nil
         Timeout::timeout(options[:timeout] || 3) do
-          recaptcha = Net::HTTP.post_form URI.parse("http://#{RECAPTCHA_VERIFY_SERVER}/verify"), {
+          recaptcha = Net::HTTP::Proxy(*proxyargs).
+            post_form URI.
+            parse("http://#{RECAPTCHA_VERIFY_SERVER}/verify"), {
             "privatekey" => private_key,
             "remoteip"   => request.remote_ip,
             "challenge"  => params[:recaptcha_challenge_field],
